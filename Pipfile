@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 pyyaml = "*"
 pylatex = "*"
+xdg = "*"
+validators = "*"
 
 [dev-packages]
 

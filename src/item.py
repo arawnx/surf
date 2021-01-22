@@ -1,7 +1,4 @@
-class Item:
-    def __init__(attrs: dict):
-        self.attrs = attrs
+import datetime
+from yaml import load, dump, Loader, Dumper
 
-class Destination:
-    def __init__(items: list):
-        self.items = items
+Item = dict
