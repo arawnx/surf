@@ -17,7 +17,7 @@ def file_sanity_check(path: PurePath) -> bool:
 
 def load_all_destination_dirs() -> list:
     dh_dir = xdg_data_home().joinpath("surfeit/")
-    dest_dirs = list(map(dh_dir.joinpath, ["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe"]))
+    dest_dirs = list(map(dh_dir.joinpath, ["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe", "reference"]))
     for path in dest_dirs:
         if not file_sanity_check(path):
             f = open(path, "w")
@@ -109,11 +109,22 @@ def interp_calendar(dictls) -> list:
         else:
             raise KeyError("Every calendar item must contain a 'date' attribute!")
 
+        if "link" in elem:
+            if validators.url(elem["link"]):
+                tmp["link"] = elem["link"]
+            else:
+                raise TypeError(f"{elem['link']} is not a properly formatted URL!")
+        elif "file" in elem:
+            p = Path(elem["file"]).expanduser().resolve()
+            tmp["file"] = p
+
+        if "project" in elem:
+            tmp["project"] = elem["project"]
+
         attrs.append(tmp)
 
     items = [Item(elem) for elem in attrs]
     return items
-
 
 def interp_tickler(dictls) -> list:
     attrs = []
@@ -165,10 +176,36 @@ def interp_projects(dictls) -> list:
     items = [Item(elem) for elem in attrs]
     return items
 
+def interp_references(dictls) -> list:
+    attrs = []
+    for elem in dictls:
+        tmp = {}
+        if "label" in elem:
+            tmp["label"] = elem["label"]
+        else:
+            raise KeyError("Every reference item must contain a 'label' attribute!")
+
+        if "link" in elem:
+            if validators.url(elem["link"]):
+                tmp["link"] = elem["link"]
+            else:
+                raise TypeError(f"{elem['link']} is not a properly formatted URL!")
+        elif "file" in elem:
+            p = Path(elem["file"]).expanduser().resolve()
+            tmp["file"] = p
+
+        if "project" in elem:
+            tmp["project"] = elem["project"]
+
+        attrs.append(tmp)
+
+    items = [Item(elem) for elem in attrs]
+    return items
+
 def get_all_dests() -> list:
     dest_dirs = load_all_destination_dirs()
     parsed = parse_all_from_strs(read_all_from_dirs(dest_dirs))
-    inbox, next_actions, calendar, waiting_for, tickler, projects, someday_maybe = [elem[1] for elem in parsed]
+    inbox, next_actions, calendar, waiting_for, tickler, projects, someday_maybe, reference = [elem[1] for elem in parsed]
 
     inbox_items = interp_simple(inbox)
     next_action_items = interp_next_actions(next_actions)
@@ -177,6 +214,7 @@ def get_all_dests() -> list:
     tickler_items = interp_tickler(tickler)
     projects_items = interp_projects(projects)
     someday_maybe_items = interp_simple(someday_maybe)
+    reference_items = interp_references(reference)
 
     return {
         'inbox': inbox_items,
@@ -185,5 +223,6 @@ def get_all_dests() -> list:
         'waiting-for': waiting_for_items,
         'tickler': tickler_items,
         'projects': projects_items,
-        'someday-maybe': someday_maybe_items
+        'someday-maybe': someday_maybe_items,
+        'references': reference_items
     }

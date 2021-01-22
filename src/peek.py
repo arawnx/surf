@@ -1,5 +1,6 @@
 from pylatex import *
-from datetime import date
+from pylatex.utils import *
+from datetime import date, timedelta
 
 def projs_sans_next_actions(proj_dest: list, na_dest: list) -> list:
     defer = []
@@ -16,14 +17,7 @@ def projs_sans_next_actions(proj_dest: list, na_dest: list) -> list:
 
     return defer
 
-def peek_pdf(dests: dict):
-    doc = Document()
-
-    doc.packages.append(Package("enumitem"))
-    doc.packages.append(Package("hyperref"))
-    doc.preamble.append(Command("hypersetup", "colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=blue"))
-
-    # Outstanding...
+def create_outstanding(dests: dict, doc):
     with doc.create(Section("Outstanding...", numbering=False)):
         with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
             # Unprocessed inbox items
@@ -61,72 +55,207 @@ def peek_pdf(dests: dict):
                     for item in tickler_today:
                         itemize_sub.add_item(f"{item['label']}")
 
-    # Next Actions
+def create_next_action_item(item, parent_list, include_project=True):
+    if "project" in item and include_project:
+        parent_list.add_item(TextColor("darkgray", f"[{item['project']}] "))
+        if "link" in item:
+            parent_list.append(Command("href", arguments=[item["link"], italic(item["label"])]))
+        elif "file" in item:
+            parent_list.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+        else:
+            parent_list.append(item["label"])
+    else:
+        if "link" in item:
+            parent_list.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+        elif "file" in item:
+            parent_list.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+        else:
+            parent_list.add_item(item["label"])
+
+    if "priority" in item:
+        parent_list.append(Command("quad"))
+        parent_list.append(TextColor("red", utils.italic(item["priority"])))
+
+    if "time" in item:
+        parent_list.append(Command("quad"))
+        parent_list.append(SmallText(TextColor("magenta", item["time"])))
+
+    if "energy" in item:
+        parent_list.append(Command("quad"))
+        parent_list.append(SmallText(TextColor("orange", item["energy"])))
+
+def create_reference_item(item, parent_list, include_project=True):
+    if "project" in item and include_project:
+        parent_list.add_item(TextColor("darkgray", f"[{item['project']}] "))
+        if "link" in item:
+            parent_list.append(Command("href", arguments=[item["link"], italic(item["label"])]))
+        elif "file" in item:
+            parent_list.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+        else:
+            parent_list.append(item["label"])
+    else:
+        if "link" in item:
+            parent_list.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+        elif "file" in item:
+            parent_list.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+        else:
+            parent_list.add_item(item["label"])
+
+def create_next_actions(dests: dict, doc):
     with doc.create(Section("Next Actions", numbering=False)):
         contexts = set([elem["context"] for elem in dests["next-actions"] if elem.get("context") != None])
         orphaned_items = [elem for elem in dests["next-actions"] if elem.get("context") == None]
         if len(orphaned_items) > 0:
             with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
                 for item in orphaned_items:
-                    if "project" in item:
-                        itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
-                        if "link" in item:
-                            itemize.append(Command("href", arguments=[item["link"], item["label"]]))
-                        elif "file" in item:
-                            itemize.append(Command("href", arguments=[f"run:{item['file']}", item["label"]]))
-                        else:
-                            itemize.append(item["label"])
-                    else:
-                        if "link" in item:
-                            itemize.add_item(Command("href", arguments=[item["link"], item["label"]]))
-                        elif "file" in item:
-                            itemize.add_item(Command("href", arguments=[f"run:{item['file']}", item["label"]]))
-                        else:
-                            itemize.add_item(item["label"])
-
-                    if "priority" in item:
-                        itemize.append(Command("quad"))
-                        itemize.append(TextColor("red", utils.italic(item["priority"])))
-
-                    if "time" in item:
-                        itemize.append(Command("quad"))
-                        itemize.append(SmallText(TextColor("magenta", item["time"])))
-
-                    if "energy" in item:
-                        itemize.append(Command("quad"))
-                        itemize.append(SmallText(TextColor("orange", item["energy"])))
+                    create_next_action_item(item, itemize)
 
         for context in contexts:
             with doc.create(Subsection(context, numbering=False)):
                 relevant_items = [elem for elem in dests["next-actions"] if elem.get("context") == context]
                 with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
                     for item in relevant_items:
-                        if "project" in item:
-                            itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
-                            if "link" in item:
-                                itemize.append(Command("href", arguments=[item["link"], item["label"]]))
-                            elif "file" in item:
-                                itemize.append(Command("href", arguments=[f"run:{item['file']}", item["label"]]))
+                        create_next_action_item(item, itemize)
+
+def create_calendar(dests: dict, doc):
+    with doc.create(Section("Calendar", numbering=False)):
+        overdue_items = [elem for elem in dests["calendar"]
+                if elem["datetime"].date() < date.today()]
+        today_items = [elem for elem in dests["calendar"]
+                if elem["datetime"].date() == date.today()]
+        future_items = [elem for elem in dests["calendar"]
+                if timedelta(days=0) < elem["datetime"].date() - date.today() < timedelta(days=90)]
+
+        with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
+            for item in overdue_items:
+                if "project" in item:
+                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    if "link" in item:
+                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
+                    elif "file" in item:
+                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']} [file link]"))]))
+                    else:
+                        itemize.add_item(TextColor("red", item["label"]))
+                else:
+                    if "link" in item:
+                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
+                    elif "file" in item:
+                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']} [file link]"))]))
+                    else:
+                        itemize.add_item(TextColor("red", item["label"]))
+
+            for item in today_items:
+                if "project" in item:
+                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    if "link" in item:
+                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
+                    elif "file" in item:
+                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']} [file link]"))]))
+                    else:
+                        itemize.add_item(TextColor("green", item["label"]))
+                else:
+                    if "link" in item:
+                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
+                    elif "file" in item:
+                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']} [file link]"))]))
+                    else:
+                        itemize.add_item(TextColor("green", item["label"]))
+
+            for item in future_items:
+                if "project" in item:
+                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    if "link" in item:
+                        itemize.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+                    elif "file" in item:
+                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+                    else:
+                        itemize.add_item(item["label"])
+                else:
+                    if "link" in item:
+                        itemize.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+                    elif "file" in item:
+                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+                    else:
+                        itemize.add_item(item["label"])
+
+def create_projects(dests: dict, doc):
+    with doc.create(Section("Projects", numbering=False)):
+        for project in dests["projects"]:
+            with doc.create(Subsection(project["label"], numbering=False)):
+                if "plan" in project:
+                    # Purpose and Principles
+                    if len(project["plan"]) > 0:
+                        with doc.create(Subsubsection("Purpose & Principles", numbering=False)):
+                            if isinstance(project["plan"][0], list):
+                                with doc.create(Itemize()) as itemize:
+                                    for item in project["plan"][0]:
+                                        itemize.add_item(item)
                             else:
-                                itemize.append(item["label"])
-                        else:
-                            if "link" in item:
-                                itemize.add_item(Command("href", arguments=[item["link"], item["label"]]))
-                            elif "file" in item:
-                                itemize.add_item(Command("href", arguments=[f"run:{item['file']}", item["label"]]))
+                                doc.append(project["plan"][0])
+                    # Outcome Vision
+                    if len(project["plan"]) > 1:
+                        with doc.create(Subsubsection("Outcome Vision", numbering=False)):
+                            if isinstance(project["plan"][1], list):
+                                with doc.create(Itemize()) as itemize:
+                                    for item in project["plan"][1]:
+                                        itemize.add_item(item)
                             else:
-                                itemize.add_item(item["label"])
+                                doc.append(project["plan"][1])
 
-                        if "priority" in item:
-                            itemize.append(Command("quad"))
-                            itemize.append(TextColor("red", utils.italic(item["priority"])))
+                    # Brainstorm
+                    if len(project["plan"]) > 2:
+                        with doc.create(Subsubsection("Brainstorm", numbering=False)):
+                            if isinstance(project["plan"][2], list):
+                                with doc.create(Itemize()) as itemize:
+                                    for item in project["plan"][2]:
+                                        itemize.add_item(item)
+                            else:
+                                doc.append(project["plan"][2])
 
-                        if "time" in item:
-                            itemize.append(Command("quad"))
-                            itemize.append(SmallText(TextColor("magenta", item["time"])))
+                    # Outline
+                    if len(project["plan"]) > 3:
+                        with doc.create(Subsubsection("Outline", numbering=False)):
+                            if isinstance(project["plan"][3], list):
+                                with doc.create(Itemize()) as itemize:
+                                    for item in project["plan"][3]:
+                                        itemize.add_item(item)
+                            else:
+                                doc.append(project["plan"][3])
 
-                        if "energy" in item:
-                            itemize.append(Command("quad"))
-                            itemize.append(SmallText(TextColor("orange", item["energy"])))
+                    # Relevant Items
+                    relevant_nas = [elem for elem in dests["next-actions"] if elem.get("project") == project["label"]]
+                    if len(relevant_nas) > 0:
+                        with doc.create(Subsubsection("Next Actions", numbering=False)):
+                            with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
+                                for item in relevant_nas:
+                                    create_next_action_item(item, itemize, False)
+
+                    relevant_refs = [elem for elem in dests["references"] if elem.get("project") == project["label"]]
+                    if len(relevant_refs) > 0:
+                        with doc.create(Subsubsection("Reference Items", numbering=False)):
+                            with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
+                                for item in relevant_refs:
+                                    create_reference_item(item, itemize, False)
+
+def peek_pdf(dests: dict):
+    doc = Document()
+
+    doc.packages.append(Package("enumitem"))
+    doc.packages.append(Package("hyperref"))
+    doc.preamble.append(Command("hypersetup", "colorlinks=true, linkcolor=blue, filecolor=purple, urlcolor=blue"))
+
+    # Outstanding...
+    create_outstanding(dests, doc)
+
+    # Next Actions
+    create_next_actions(dests, doc)
+
+    # Calendar
+    doc.append(NewPage())
+    create_calendar(dests, doc)
+
+    # Projects
+    doc.append(NewPage())
+    create_projects(dests, doc)
 
     doc.generate_pdf('lists', clean_tex=False)
