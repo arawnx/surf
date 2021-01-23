@@ -258,4 +258,4 @@ def peek_pdf(dests: dict):
     doc.append(NewPage())
     create_projects(dests, doc)
 
-    doc.generate_pdf('lists', clean_tex=False)
+    doc.generate_pdf('peek', clean_tex=False)
