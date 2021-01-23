@@ -237,7 +237,7 @@ def create_projects(dests: dict, doc):
                                 for item in relevant_refs:
                                     create_reference_item(item, itemize, False)
 
-def peek_pdf(dests: dict):
+def peek_pdf(dests: dict, path):
     doc = Document()
 
     doc.packages.append(Package("enumitem"))
@@ -258,4 +258,4 @@ def peek_pdf(dests: dict):
     doc.append(NewPage())
     create_projects(dests, doc)
 
-    doc.generate_pdf('peek', clean_tex=False)
+    doc.generate_pdf(path, clean_tex=False)
