@@ -17,7 +17,7 @@ def file_sanity_check(path: PurePath) -> bool:
 
 def load_all_destination_dirs() -> list:
     dh_dir = xdg_data_home().joinpath("surfeit/")
-    dest_dirs = list(map(dh_dir.joinpath, ["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe", "reference"]))
+    dest_dirs = list(map(dh_dir.joinpath, ["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe", "reference", "horizons"]))
     for path in dest_dirs:
         if not file_sanity_check(path):
             f = open(path, "w")
@@ -202,10 +202,70 @@ def interp_references(dictls) -> list:
     items = [Item(elem) for elem in attrs]
     return items
 
+def interp_horizons(dictls) -> list:
+    purpose = []
+    for elem in dictls["Purpose and Principles"]:
+        tmp = {}
+        if "label" in elem:
+            tmp["label"] = elem["label"]
+        else:
+            raise KeyError("Every horizon item must contain a 'label' attribute!")
+
+        if "description" in elem:
+            tmp["description"] = elem["description"]
+
+        purpose.append(tmp)
+
+    vision = []
+    for elem in dictls["Vision"]:
+        tmp = {}
+        if "label" in elem:
+            tmp["label"] = elem["label"]
+        else:
+            raise KeyError("Every horizon item must contain a 'label' attribute!")
+
+        if "description" in elem:
+            tmp["description"] = elem["description"]
+
+        vision.append(tmp)
+
+    goals = []
+    for elem in dictls["Goals and Objectives"]:
+        tmp = {}
+        if "label" in elem:
+            tmp["label"] = elem["label"]
+        else:
+            raise KeyError("Every horizon item must contain a 'label' attribute!")
+
+        if "description" in elem:
+            tmp["description"] = elem["description"]
+
+        goals.append(tmp)
+
+    aof = []
+    for elem in dictls["Areas of Focus, Responsibility, and Interest"]:
+        tmp = {}
+        if "label" in elem:
+            tmp["label"] = elem["label"]
+        else:
+            raise KeyError("Every horizon item must contain a 'label' attribute!")
+
+        if "description" in elem:
+            tmp["description"] = elem["description"]
+
+        aof.append(tmp)
+
+    return {
+        "purpose": purpose,
+        "vision": vision,
+        "goals": goals,
+        "areas-of-focus": aof
+    }
+
 def get_all_dests() -> list:
     dest_dirs = load_all_destination_dirs()
     parsed = parse_all_from_strs(read_all_from_dirs(dest_dirs))
-    inbox, next_actions, calendar, waiting_for, tickler, projects, someday_maybe, reference = [elem[1] for elem in parsed]
+    inbox, next_actions, calendar, waiting_for, tickler, projects, someday_maybe, reference, horizons = [elem[1] for elem in parsed]
 
     inbox_items = interp_simple(inbox)
     next_action_items = interp_next_actions(next_actions)
@@ -215,6 +275,7 @@ def get_all_dests() -> list:
     projects_items = interp_projects(projects)
     someday_maybe_items = interp_simple(someday_maybe)
     reference_items = interp_references(reference)
+    horizon_items = interp_horizons(horizons)
 
     return {
         'inbox': inbox_items,
@@ -224,5 +285,6 @@ def get_all_dests() -> list:
         'tickler': tickler_items,
         'projects': projects_items,
         'someday-maybe': someday_maybe_items,
-        'references': reference_items
+        'references': reference_items,
+        'horizons': horizon_items
     }

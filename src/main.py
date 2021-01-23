@@ -16,7 +16,7 @@ def main():
         subprocess.run(["zathura", "/tmp/peek.pdf"])
     elif cmd.lower() == "edit":
         surf_dir = xdg_data_home().joinpath("surfeit/")
-        subprocess.run(["nvim", "-p", "inbox", "next-actions", "projects", "calendar", "waiting-for", "someday-maybe", "reference", "tickler"], cwd=surf_dir)
+        subprocess.run(["nvim", "-p", "inbox", "next-actions", "projects", "calendar", "waiting-for", "horizons", "someday-maybe", "reference", "tickler"], cwd=surf_dir)
     else:
         raise "Unknown command. Exiting"
 

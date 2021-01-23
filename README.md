@@ -32,96 +32,97 @@ Currently, Surfeit has two subcommands: `edit` and `peek`. Two more are currentl
   project: "Example Project"
 - label: "Skinny item" # Contains no attributes other than its label
 ```
-For a full specification of YAML 1.1, [see here](https://yaml.org/spec/1.1/). A decent grasp of the formatting is expected (luckily it's very very easy and readable). Since some attributes are optional, there are both maximal and minimal variants of each item; maximal variants contain specify possible attribute, minimal variants specify only those attributes *required* for interpretation, anything less would cause a runtime error. Following, there is provided a list of the maximal (all attributes covered) and minimal (only necessary attributes covered) specifications of each variety of item:
+For a full specification of YAML 1.1, [see here](https://yaml.org/spec/1.1/). A decent grasp of the formatting is expected (luckily it's very very easy and readable). Since some attributes are optional, certain fields will be marked optional with a comment (comments in YAML begin with a `#` sign). Following, there is a list of the schemas for the destination files in YAML:
 
 #### Inbox Item
-Just a string. The maximal and minimal variants are both:
+Just a string:
 ```
 - Item
 ```
 
 #### Someday/Maybe Item
-Just a string. The maximal and minimal variants are both:
+Just a string:
 ```
 - Item
 ```
 
 #### Waiting For Item
-Just a string. The maximal and minimal variants are both:
+Just a string:
 ```
 - Item
 ```
 
 #### Next Action Item
-Minimal variant:
 ```
 - label: "Item"
-```
-Maximal variant:
-```
-- label: "Item"
-  context: @FRED
-  time: 20m
-  energy: low
-  priority: !!!
-  file: "~/image.png"
-  link: "https://www.google.com"
-  project: "Attached Project"
+  context: @FRED # Optional
+  time: 20m # Optional
+  energy: low # Optional
+  priority: !!! # Optional
+  file: "~/image.png" # Optional
+  link: "https://www.google.com" # Optional
+  project: "Attached Project" # Optional
 ```
 Note: Both `link` and `file` specify the LaTeX hyperlink to attach, with the former marking a URL and the latter marking a local path. Therefore, both may not be specified in the same item.
 
 #### Tickler Item
-Minimal variant:
 ```
 - label: "Item"
   date: 2021-01-01
-```
-Maximal variant:
-```
-- label: "Item"
-  date: 2021-01-01
-  link: "https://www.google.com"
-  file: "~/image.png"
+  link: "https://www.google.com" # Optional
+  file: "~/image.png" # Optional
 ```
 Note: Both `link` and `file` specify the LaTeX hyperlink to attach, with the former marking a URL and the latter marking a local path. Therefore, both may not be specified in the same item.
 
 #### Reference Item
-Minimal variant:
 ```
 - label: "Item"
+  link: "https://www.google.com" # Optional
+  file: "~/image.png" # Optional
+  project: "Attached Project" # Optional
 ```
-Maximal variant:
-```
-- label: "Item"
-  link: "https://www.google.com"
-  file: "~/image.png"
-  project: "Attached Project"
-```
+Note: Both `link` and `file` specify the LaTeX hyperlink to attach, with the former marking a URL and the latter marking a local path. Therefore, both may not be specified in the same item.
 
 #### Calendar Item
-Minimal variant:
 ```
 - label: "Item"
   date: 2021-01-01
-```
-Maximal variant:
-```
-- label: "Item"
-  date: 2021-01-01
-  time: "13:30"
-  link: "https://www.google.com"
-  file: "~/image.png"
-  project: "Attached project"
+  time: "13:30" # Optional
+  link: "https://www.google.com" # Optional
+  file: "~/image.png" # Optional
+  project: "Attached project" # Optional
 ```
 Note: Times *must* be specified in HH:MM format; seconds may not be specified and AM/PM may not be specified. Both `link` and `file` specify the LaTeX hyperlink to attach, with the former marking a URL and the latter marking a local path. Therefore, both may not be specified in the same item.
 
 #### Project Item
-The minimal and maximum variant are both:
 ```
 - label: "Item"
-  plan:
-    - "Why I want to do this..." # Purpose & principles
-    - "How it'll look..." # Outcome vision
-    - "Some scatterbrained ideas I had..." # Brainstorm
-    - "The steps we have to take..." # Organized
+  plan: # Optional
+    - "Why I want to do this..." # Purpose & principles, optional
+    - "How it'll look..." # Outcome vision, optional
+    - "Some scatterbrained ideas I had..." # Brainstorm, optional
+    - "The steps we have to take..." # Organized, optional
 ```
+Note: The `plan` fields must be in order. If you want to specify an outcome vision without purpose and principles (why would you do this?), simply mark purpose and principles null with a `~` sign.
+
+#### Horizons of Focus
+These are formatted uniquely. There are a fixed set of five horizons of focus, corresponding to [those in GTD, excluding the projects, which have their own file.](https://gettingthingsdone.com/2011/01/the-6-horizons-of-focus/) Therefore, the file should be formatted as follows:
+```
+"Purpose and Principles":
+    - label: "Christ"
+      description: "Some stuff I have..." # Optional
+"Vision": # 3-5 years
+    - label: "Learn German"
+      description: "Some stuff I have..." # Optional
+"Goals and Objectives": # 1-2 years
+    - label: "Start a company"
+      description: "Some stuff I have..." # Optional
+"Areas of Focus, Responsibility, and Interest":
+    - label: "Job"
+      description: "Some stuff I have..." # Optional
+    - label: "Family"
+      description: # Optional
+          - "List"
+          - "Another Item..."
+```
+... dictionary (file) holding a series of lists (horizons) of dictionaries (items). `description`s can be either lists or strings
