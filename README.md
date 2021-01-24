@@ -13,11 +13,13 @@ Since Python isn't a compiled language, and Surfeit isn't on PyPI quite yet, ins
 ## Usage
 
 ### Subcommands
-Currently, Surfeit has two subcommands: `edit` and `peek`. Two more are currently planned, `echo` (a weekly review LaTeX-generating subcommand) and `seek` (an interactive TUI interface).
+Currently, Surfeit has three subcommands: `edit`, `echo`, and `peek`. One more is currently planned, `seek`, an interactive TUI interface.
 
 `edit` opens a set of vim/nvim buffers with access to all of the underlying YAML files that hold your program's local data; that is, your GTD destinations (inbox, trash, next actions, &c.). Currently, I find I prefer using vim directly, however I do plan on creating a TUI interface at some point to bypass this.
 
-`peek` interprets these YAML files into a LaTeX document that shows a sufficient overview of the most important destinations and items for the day/week &c. It is very similar to the Current View of David Allen's own [Ultimate GTD App](https://www.dropbox.com/s/d9sdbghzooy4rpy/DA_software.pdf?dl=1). It shows unprocessed inbox items, projects without next actions, tickler items due today, next actions, your calendar, projects, &c.
+`peek` interprets these YAML files into a LaTeX document that shows a sufficient overview of the most important destinations and items for the day/week &c. It is very similar to the Current View of David Allen's own [Ultimate GTD App](https://www.dropbox.com/s/d9sdbghzooy4rpy/DA_software.pdf?dl=1). It shows unprocessed inbox items, projects without next actions, tickler items due today, next actions, your calendar, projects, &c. More curtly, `peek` shows the *engage* section of the GTD methodology.
+
+`echo` is the same as `peek`, but instead of showing the content necessary to *engage*, it shows the content necessary to *reflect*.
 
 ### `edit` Formatting
 `edit` opens a set of vim/nvim buffers holding your destination files (specified in YAML 1.1). Surfeit creates these in `$XDG_DATA_HOME`, which *should* be specified. If your system doesn't have XDG directories set (this is **EXCEPTIONALLY** rare), either fork and modify the source code or else temporarily set it with `export XDG_DATA_HOME=/your/preferred/dir/`. The different files represent different destinations. [For a (semi-)complete list of GTD destinations, see the outer components on this diagram.](https://archive.is/TjVdW) Note that in Surfeit, there is no trash destination. All of these destinations have different item specifications. For example, an inbox destination might look like this:
