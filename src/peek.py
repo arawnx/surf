@@ -24,9 +24,11 @@ def create_outstanding(dests: dict, doc):
             itemize.add_item(TextColor("red", f"{len(dests['inbox'])} Unprocessed inbox items"))
             if len(dests["inbox"]) > 0:
                 itemize.append(TextColor("red", ":"))
+                doc.append(Command("sloppy"))
                 with doc.create(Itemize()) as itemize_sub:
                     for item in dests["inbox"]:
                         itemize_sub.add_item(f"{item['label']}")
+                doc.append(Command("fussy"))
 
             # Projects without next actions
             psna = projs_sans_next_actions(dests["projects"], dests["next-actions"])
@@ -222,20 +224,25 @@ def create_projects(dests: dict, doc):
                             else:
                                 doc.append(project["plan"][3])
 
-                    # Relevant Items
-                    relevant_nas = [elem for elem in dests["next-actions"] if elem.get("project") == project["label"]]
+                # Relevant Items
+                relevant_nas = [elem for elem in dests["next-actions"] if elem.get("project") == project["label"]]
+                with doc.create(Subsubsection(f"Next Actions", numbering=False)):
                     if len(relevant_nas) > 0:
-                        with doc.create(Subsubsection("Next Actions", numbering=False)):
-                            with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
-                                for item in relevant_nas:
-                                    create_next_action_item(item, itemize, False)
+                        with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
+                            for item in relevant_nas:
+                                create_next_action_item(item, itemize, False)
+                    else:
+                        with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
+                            itemize.add_item("No next actions defined!")
 
-                    relevant_refs = [elem for elem in dests["references"] if elem.get("project") == project["label"]]
-                    if len(relevant_refs) > 0:
-                        with doc.create(Subsubsection("Reference Items", numbering=False)):
-                            with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
-                                for item in relevant_refs:
-                                    create_reference_item(item, itemize, False)
+                relevant_refs = [elem for elem in dests["references"] if elem.get("project") == project["label"]]
+                if len(relevant_refs) > 0:
+                    with doc.create(Subsubsection("Reference Items", numbering=False)):
+                        with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
+                            for item in relevant_refs:
+                                create_reference_item(item, itemize, False)
+
+                doc.append(Command("vspace", "10mm"))
 
 def peek_pdf(dests: dict, path):
     doc = Document()
