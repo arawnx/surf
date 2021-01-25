@@ -154,6 +154,7 @@ def create_projects(dests: dict, doc):
                 doc.append(Command("vspace", "10mm"))
 
 def create_horizons(dests: dict, doc):
+    doc.append(NewPage())
     with doc.create(Subsection("Purpose & Principles", numbering=False)):
         for item in dests["horizons"]["purpose"]:
             with doc.create(Subsubsection(item["label"], numbering=False)):
@@ -168,6 +169,7 @@ def create_horizons(dests: dict, doc):
 
                 doc.append(Command("vspace", "10mm"))
 
+    doc.append(NewPage())
     with doc.create(Subsection("Vision", numbering=False)):
         for item in dests["horizons"]["vision"]:
             with doc.create(Subsubsection(item["label"], numbering=False)):
@@ -182,6 +184,7 @@ def create_horizons(dests: dict, doc):
 
                 doc.append(Command("vspace", "10mm"))
 
+    doc.append(NewPage())
     with doc.create(Subsection("Goals and Objectives", numbering=False)):
         for item in dests["horizons"]["goals"]:
             with doc.create(Subsubsection(item["label"], numbering=False)):
@@ -196,6 +199,7 @@ def create_horizons(dests: dict, doc):
 
                 doc.append(Command("vspace", "10mm"))
 
+    doc.append(NewPage())
     with doc.create(Subsection("Areas of Focus, Responsibility, and Interest", numbering=False)):
         for item in dests["horizons"]["areas-of-focus"]:
             with doc.create(Subsubsection(item["label"], numbering=False)):

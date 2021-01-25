@@ -15,8 +15,17 @@ def file_sanity_check(path: PurePath) -> bool:
         return False
     return True
 
+def dir_sanity_check(path: PurePath) -> bool:
+    if not path.exists():
+        return False
+    if not path.is_dir():
+        return False
+    return True
+
 def load_all_destination_dirs() -> list:
     dh_dir = xdg_data_home().joinpath("surfeit/")
+    if not dir_sanity_check(dh_dir):
+        dh_dir.mkdir()
     dest_dirs = list(map(dh_dir.joinpath, ["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe", "reference", "horizons"]))
     for path in dest_dirs:
         if not file_sanity_check(path):
