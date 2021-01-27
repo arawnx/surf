@@ -12,7 +12,9 @@ def create_calendar_overdue(dests: dict, doc):
         with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
             for item in overdue_items:
                 if "project" in item:
-                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                    itemize.append(Command("quad"))
+                    itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
                         itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
                     elif "file" in item:
@@ -21,11 +23,17 @@ def create_calendar_overdue(dests: dict, doc):
                         itemize.append(item["label"])
                 else:
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
                     else:
-                        itemize.add_item(item["label"])
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(item["label"])
 
 def create_calendar_upcoming(dests: dict, doc):
     with doc.create(Subsection("Upcoming Calendar Items", numbering=False)):
@@ -35,7 +43,9 @@ def create_calendar_upcoming(dests: dict, doc):
         with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
             for item in upcoming_items:
                 if "project" in item:
-                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                    itemize.append(Command("quad"))
+                    itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
                         itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
                     elif "file" in item:
@@ -44,11 +54,17 @@ def create_calendar_upcoming(dests: dict, doc):
                         itemize.append(item["label"])
                 else:
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
                     else:
-                        itemize.add_item(item["label"])
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(item["label"])
 
 def create_next_actions(dests: dict, doc):
     with doc.create(Subsection("Next Actions", numbering=False)):

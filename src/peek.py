@@ -1,6 +1,6 @@
 from pylatex import *
 from pylatex.utils import *
-from datetime import date, timedelta
+from datetime import *
 
 def projs_sans_next_actions(proj_dest: list, na_dest: list) -> list:
     defer = []
@@ -131,41 +131,59 @@ def create_calendar(dests: dict, doc):
         with doc.create(Itemize(options=NoEscape(r'label={}'))) as itemize:
             for item in overdue_items:
                 if "project" in item:
-                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                    itemize.append(Command("quad"))
+                    itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
+                        itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']}"))]))
                     elif "file" in item:
-                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']} [file link]"))]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']}"))]))
                     else:
                         itemize.append(TextColor("red", item["label"]))
                 else:
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']}"))]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']} [file link]"))]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']}"))]))
                     else:
-                        itemize.add_item(TextColor("red", item["label"]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(TextColor("red", item["label"]))
 
             for item in today_items:
                 if "project" in item:
-                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                    itemize.append(Command("quad"))
+                    itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
+                        itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']}"))]))
                     elif "file" in item:
-                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']} [file link]"))]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']}"))]))
                     else:
                         itemize.append(TextColor("green", item["label"]))
                 else:
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']}"))]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']} [file link]"))]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']}"))]))
                     else:
-                        itemize.add_item(TextColor("green", item["label"]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(TextColor("green", item["label"]))
 
             for item in future_items:
                 if "project" in item:
-                    itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
+                    itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                    itemize.append(Command("quad"))
+                    itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
                         itemize.append(Command("href", arguments=[item["link"], italic(item["label"])]))
                     elif "file" in item:
@@ -174,11 +192,17 @@ def create_calendar(dests: dict, doc):
                         itemize.append(item["label"])
                 else:
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[item["link"], italic(item["label"])]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
                     else:
-                        itemize.add_item(item["label"])
+                        itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
+                        itemize.append(Command("quad"))
+                        itemize.append(item["label"])
 
 def create_projects(dests: dict, doc):
     with doc.create(Section("Projects", numbering=False)):
