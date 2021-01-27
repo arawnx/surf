@@ -133,11 +133,11 @@ def create_calendar(dests: dict, doc):
                 if "project" in item:
                     itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
+                        itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']} [file link]"))]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']} [file link]"))]))
                     else:
-                        itemize.add_item(TextColor("red", item["label"]))
+                        itemize.append(TextColor("red", item["label"]))
                 else:
                     if "link" in item:
                         itemize.add_item(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']} [URL link]"))]))
@@ -150,11 +150,11 @@ def create_calendar(dests: dict, doc):
                 if "project" in item:
                     itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
+                        itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']} [file link]"))]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']} [file link]"))]))
                     else:
-                        itemize.add_item(TextColor("green", item["label"]))
+                        itemize.append(TextColor("green", item["label"]))
                 else:
                     if "link" in item:
                         itemize.add_item(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']} [URL link]"))]))
@@ -167,11 +167,11 @@ def create_calendar(dests: dict, doc):
                 if "project" in item:
                     itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+                        itemize.append(Command("href", arguments=[item["link"], italic(item["label"])]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
                     else:
-                        itemize.add_item(item["label"])
+                        itemize.append(item["label"])
                 else:
                     if "link" in item:
                         itemize.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))

@@ -14,11 +14,11 @@ def create_calendar_overdue(dests: dict, doc):
                 if "project" in item:
                     itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
                     else:
-                        itemize.add_item(item["label"])
+                        itemize.append(item["label"])
                 else:
                     if "link" in item:
                         itemize.add_item(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
@@ -37,11 +37,11 @@ def create_calendar_upcoming(dests: dict, doc):
                 if "project" in item:
                     itemize.add_item(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.add_item(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
                     elif "file" in item:
-                        itemize.add_item(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
                     else:
-                        itemize.add_item(item["label"])
+                        itemize.append(item["label"])
                 else:
                     if "link" in item:
                         itemize.add_item(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
