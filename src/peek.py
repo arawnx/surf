@@ -132,7 +132,7 @@ def create_calendar(dests: dict, doc):
             for item in overdue_items:
                 if "project" in item:
                     itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                    if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                    if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                         itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
@@ -145,19 +145,19 @@ def create_calendar(dests: dict, doc):
                 else:
                     if "link" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']}"))]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']}"))]))
                     else:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(TextColor("red", item["label"]))
@@ -165,7 +165,7 @@ def create_calendar(dests: dict, doc):
             for item in today_items:
                 if "project" in item:
                     itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                    if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                    if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                         itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
@@ -178,19 +178,19 @@ def create_calendar(dests: dict, doc):
                 else:
                     if "link" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']}"))]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']}"))]))
                     else:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(TextColor("green", item["label"]))
@@ -198,7 +198,7 @@ def create_calendar(dests: dict, doc):
             for item in future_items:
                 if "project" in item:
                     itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                    if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                    if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                         itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
@@ -211,19 +211,19 @@ def create_calendar(dests: dict, doc):
                 else:
                     if "link" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(Command("href", arguments=[item["link"], italic(item["label"])]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
                     else:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
-                        if item["datetime"].hour != 0 and item["datetime"].minute != 0:
+                        if item["datetime"].hour != 0 or item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
                         itemize.append(item["label"])
