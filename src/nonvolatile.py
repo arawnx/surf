@@ -113,6 +113,10 @@ def interp_calendar(dictls) -> list:
             if "time" in elem:
                 hour, minute = list(map(int, elem["time"].split(':')))
                 tmp["datetime"] = datetime.datetime(raw_date.year, raw_date.month, raw_date.day, hour, minute)
+
+                if "end_time" in elem:
+                    ehour, eminute = list(map(int, elem["end_time"].split(':')))
+                    tmp["endtime"] = datetime.datetime(raw_date.year, raw_date.month, raw_date.day, ehour, eminute)
             else:
                 tmp["datetime"] = datetime.datetime(raw_date.year, raw_date.month, raw_date.day)
         else:
