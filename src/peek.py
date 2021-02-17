@@ -61,14 +61,14 @@ def create_next_action_item(item, parent_list, include_project=True):
     if "project" in item and include_project:
         parent_list.add_item(TextColor("darkgray", f"[{item['project']}] "))
         if "link" in item:
-            parent_list.append(Command("href", arguments=[item["link"], italic(item["label"])]))
+            parent_list.append(Command("href", arguments=[NoEscape(item["link"]), italic(item["label"])]))
         elif "file" in item:
             parent_list.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
         else:
             parent_list.append(item["label"])
     else:
         if "link" in item:
-            parent_list.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+            parent_list.add_item(Command("href", arguments=[NoEscape(item["link"]), italic(item["label"])]))
         elif "file" in item:
             parent_list.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
         else:
@@ -90,14 +90,14 @@ def create_reference_item(item, parent_list, include_project=True):
     if "project" in item and include_project:
         parent_list.add_item(TextColor("darkgray", f"[{item['project']}] "))
         if "link" in item:
-            parent_list.append(Command("href", arguments=[item["link"], italic(item["label"])]))
+            parent_list.append(Command("href", arguments=[NoEscape(item["link"]), italic(item["label"])]))
         elif "file" in item:
             parent_list.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
         else:
             parent_list.append(item["label"])
     else:
         if "link" in item:
-            parent_list.add_item(Command("href", arguments=[item["link"], italic(item["label"])]))
+            parent_list.add_item(Command("href", arguments=[NoEscape(item["link"]), italic(item["label"])]))
         elif "file" in item:
             parent_list.add_item(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
         else:
@@ -140,7 +140,7 @@ def create_calendar(dests: dict, doc):
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']}"))]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), TextColor("red", italic(f"{item['label']}"))]))
                     elif "file" in item:
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("red", italic(f"{item['label']}"))]))
                     else:
@@ -154,7 +154,7 @@ def create_calendar(dests: dict, doc):
                             if item["endtime"].hour != 0 or item["endtime"].minute != 0:
                                 itemize.append(bold(item["endtime"].strftime("-%I:%M%p")))
                         itemize.append(Command("quad"))
-                        itemize.append(Command("href", arguments=[item["link"], TextColor("red", italic(f"{item['label']}"))]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), TextColor("red", italic(f"{item['label']}"))]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
                         if item["datetime"].hour != 0 or item["datetime"].minute != 0:
@@ -185,7 +185,7 @@ def create_calendar(dests: dict, doc):
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']}"))]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), TextColor("green", italic(f"{item['label']}"))]))
                     elif "file" in item:
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", TextColor("green", italic(f"{item['label']}"))]))
                     else:
@@ -199,7 +199,7 @@ def create_calendar(dests: dict, doc):
                             if item["endtime"].hour != 0 or item["endtime"].minute != 0:
                                 itemize.append(bold(item["endtime"].strftime("-%I:%M%p")))
                         itemize.append(Command("quad"))
-                        itemize.append(Command("href", arguments=[item["link"], TextColor("green", italic(f"{item['label']}"))]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), TextColor("green", italic(f"{item['label']}"))]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
                         if item["datetime"].hour != 0 or item["datetime"].minute != 0:
@@ -230,7 +230,7 @@ def create_calendar(dests: dict, doc):
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], italic(item["label"])]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), italic(item["label"])]))
                     elif "file" in item:
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(item["label"])]))
                     else:
@@ -244,7 +244,7 @@ def create_calendar(dests: dict, doc):
                             if item["endtime"].hour != 0 or item["endtime"].minute != 0:
                                 itemize.append(bold(item["endtime"].strftime("-%I:%M%p")))
                         itemize.append(Command("quad"))
-                        itemize.append(Command("href", arguments=[item["link"], italic(item["label"])]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), italic(item["label"])]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
                         if item["datetime"].hour != 0 or item["datetime"].minute != 0:

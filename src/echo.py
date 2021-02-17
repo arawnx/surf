@@ -18,7 +18,7 @@ def create_calendar_overdue(dests: dict, doc):
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), italic(f"{item['label']}")]))
                     elif "file" in item:
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
                     else:
@@ -29,7 +29,7 @@ def create_calendar_overdue(dests: dict, doc):
                         if item["datetime"].hour != 0 and item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
-                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), italic(f"{item['label']}")]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
                         if item["datetime"].hour != 0 and item["datetime"].minute != 0:
@@ -57,7 +57,7 @@ def create_calendar_upcoming(dests: dict, doc):
                     itemize.append(Command("quad"))
                     itemize.append(TextColor("darkgray", f"[{item['project']}] "))
                     if "link" in item:
-                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), italic(f"{item['label']}")]))
                     elif "file" in item:
                         itemize.append(Command("href", arguments=[f"run:{item['file']}", italic(f"{item['label']}")]))
                     else:
@@ -68,7 +68,7 @@ def create_calendar_upcoming(dests: dict, doc):
                         if item["datetime"].hour != 0 and item["datetime"].minute != 0:
                             itemize.append(bold(item["datetime"].strftime(" %I:%M%p")))
                         itemize.append(Command("quad"))
-                        itemize.append(Command("href", arguments=[item["link"], italic(f"{item['label']}")]))
+                        itemize.append(Command("href", arguments=[NoEscape(item["link"]), italic(f"{item['label']}")]))
                     elif "file" in item:
                         itemize.add_item(bold(item["datetime"].strftime("%a, %b. %d")))
                         if item["datetime"].hour != 0 and item["datetime"].minute != 0:
