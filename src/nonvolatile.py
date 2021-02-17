@@ -165,6 +165,8 @@ def interp_tickler(dictls) -> list:
             p = Path(elem["file"]).expanduser().resolve()
             tmp["file"] = p
 
+        attrs.append(tmp)
+
     items = [Item(elem) for elem in attrs]
     return items
 
