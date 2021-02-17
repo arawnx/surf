@@ -14,10 +14,10 @@ def main():
         dests = nonvolatile.get_all_dests()
         peek.peek_pdf(dests, Path("/tmp/peek"))
         subprocess.run(["zathura", "/tmp/peek.pdf"])
-    #elif cmd.lower() == "echo":
-    #    dests = nonvolatile.get_all_dests()
-    #    echo.echo_pdf(dests, Path("/tmp/echo"))
-    #    subprocess.run(["zathura", "/tmp/echo.pdf"])
+    elif cmd.lower() == "echo":
+        dests = nonvolatile.get_all_dests()
+        echo.echo_pdf(dests, Path("/tmp/echo"))
+        subprocess.run(["zathura", "/tmp/echo.pdf"])
     elif cmd.lower() == "edit":
         surf_dir = xdg_data_home().joinpath("surfeit/")
         subprocess.run(["nvim", "-p", "inbox", "next-actions", "projects", "calendar", "waiting-for", "horizons", "someday-maybe", "reference", "tickler"], cwd=surf_dir)
