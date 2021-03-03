@@ -1,5 +1,5 @@
 import nonvolatile
-import peek, echo
+import peek, echo, oldecho
 import sys
 import subprocess
 import os
@@ -17,6 +17,10 @@ def main():
     elif cmd.lower() == "echo":
         dests = nonvolatile.get_all_dests()
         echo.echo_pdf(dests, Path("/tmp/echo"))
+        subprocess.run(["zathura", "/tmp/echo.pdf"])
+    elif cmd.lower() == "oldecho":
+        dests = nonvolatile.get_all_dests()
+        oldecho.echo_pdf(dests, Path("/tmp/echo"))
         subprocess.run(["zathura", "/tmp/echo.pdf"])
     elif cmd.lower() == "edit":
         surf_dir = xdg_data_home().joinpath("surfeit/")

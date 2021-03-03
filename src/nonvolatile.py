@@ -26,13 +26,16 @@ def load_all_destination_dirs() -> list:
     dh_dir = xdg_data_home().joinpath("surfeit/")
     if not dir_sanity_check(dh_dir):
         dh_dir.mkdir()
-    dest_dirs = list(map(dh_dir.joinpath, ["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe", "reference", "horizons"]))
+    dest_strs = list(["inbox", "next-actions", "calendar", "waiting-for", "tickler", "projects", "someday-maybe", "reference", "horizons"])
+    dest_strs = [(elem + '.yaml') for elem in dest_strs]
+    dest_dirs = list(map(dh_dir.joinpath, dest_strs))
     for path in dest_dirs:
         if not file_sanity_check(path):
             f = open(path, "w")
             f.write(f"# Newly created on {str(date.today())}")
             f.close()
 
+    print(dest_dirs)
     return dest_dirs
 
 # Returns tuples matching file names (destination names) to the contents within
